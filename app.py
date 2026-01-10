@@ -6,76 +6,6 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 
 # ======================
-# 🔧 DATA LOADING & SETUP
-# ======================
-
-# Load sample data (you can replace this with file uploader later)
-@st.cache_data
-def load_sample_data():
-    data = {
-        "Date": [
-            "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26", "2025-12-26",  # 5
-            "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25", "2025-12-25",  # +8 = 13
-            "2025-12-24", "2025-12-24", "2025-12-24",  # +3 = 16
-            "2025-12-23", "2025-12-23",  # +2 = 18
-            "2025-12-22", "2025-12-22", "2025-12-22"   # +3 = 21
-        ],
-        "Map": [
-            "Haven", "Haven", "Pearl", "Pearl", "Bind",
-            "Abyss", "Split", "Haven", "Haven", "Corrode", "Bind", "Corrode", "Split",
-            "Sunset", "Abyss", "Sunset",
-            "Corrode", "Split",
-            "Pearl", "Haven", "Split"
-        ],
-        "Mode": ["Competitive"] * 21,
-        "Round_Score": [
-            "13:3", "13:8", "13:11", "7:13", "8:13",
-            "2:13", "4:13", "13:7", "10:13", "13:4", "13:5", "13:11", "13:9",
-            "13:11", "13:4", "13:11",
-            "13:9", "9:13",
-            "2:13", "9:13", "13:8"
-        ],
-        "Agent": [
-            "Phoenix", "Phoenix", "Phoenix", "KAY/O", "Phoenix",
-            "Reyna", "Reyna", "Sage", "Reyna", "Reyna", "Tejo", "Phoenix", "Clove",
-            "Clove", "Clove", "Reyna",
-            "Reyna", "Reyna",
-            "Phoenix", "Sage", "Phoenix"
-        ],
-        "Rank": [
-            "Silver 1", "Silver 1", "Silver 1", "Silver 1", "Silver 1",
-            "Silver 1", "Silver 1", "Silver 1", "Silver 1", "Silver 1", "Silver 1", "Silver 1", "Silver 1",
-            "Bronze 3", "Bronze 3", "Bronze 3",
-            "Bronze 3", "Bronze 3",
-            "Bronze 3", "Bronze 3", "Bronze 3"
-        ],
-        "Result": [
-            "Win", "Win", "Win", "Loss", "Loss",
-            "Loss", "Loss", "Win", "Loss", "Win", "Win", "Win", "Win",
-            "Win", "Win", "Win",
-            "Win", "Loss",
-            "Loss", "Loss", "Win"
-        ],
-        "K": [20,26,32,12,15, 17,13,9,19,23,9,13,24, 22,11,31, 17,14, 12,12, 25],
-        "D": [8,11,16,16,16, 14,15,13,19,12,11,19,13, 17,13,14, 16,18, 16,15, 10],
-        "A": [5,6,10,6,6, 0,4,7,5,7,4,9,14, 7,12,5, 2,3, 0,6, 8],
-        "KD": [2.5,2.4,2.0,0.8,0.9, 1.2,0.9,0.7,1.0,1.9,0.8,0.7,1.8, 1.3,0.8,2.2, 1.1,0.8, 0.8,0.8, 2.5],
-        "DDΔ": [87,82,153,9,10, 44,-19,-28,-1,104,-6,-31,100, 32,-32,86, -1,-14, -23,-31, 95],
-        "HS%": [18,25,19,15,36, 28,8,23,29,33,26,19,26, 31,22,23, 25,31, 22,22, 27],
-        "ADR": [214,218,295,136,153, 195,129,97,165,240,128,111,220, 176,96,232, 138,122, 148,97, 225],
-        "ACS": [346,340,432,207,217, 331,219,131,241,384,165,170,314, 261,161,357, 216,176, 240,162, 365],
-        "Performance_Score": [967,970,941,543,492, 677,385,311,474,987,583,398,937, 843,590,893, 519,368, 375,341, 925],
-        "Position": ["MVP","MVP","MVP","6th","6th", "2nd","2nd","10th","4th","MVP","7th","9th","2nd", "5th","8th","MVP", "5th","8th","3rd","8th", "MVP"],
-        "MVP": ["Yes","Yes","Yes","No","No", "No","No","No","No","Yes","No","No","No", "No","No","Yes", "No","No","No","No", "Yes"]
-    }
-    df = pd.DataFrame(data)
-    df['Date'] = pd.to_datetime(df['Date'])
-    df['Win'] = df['Result'] == 'Win'
-    return df
-
-df = load_sample_data()
-
-# ======================
 # 🎨 PAGE CONFIG & HEADER
 # ======================
 
@@ -85,6 +15,71 @@ df = load_sample_data()
 #     layout="wide",
 #     initial_sidebar_state="expanded"
 # )
+
+# ======================
+# 🔧 DATA LOADING & SETUP
+# ======================
+
+# Load sample data or uploaded data
+def load_data(uploaded_file=None):
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        df['Date'] = pd.to_datetime(df['Date'])
+        df['Win'] = df['Result'] == 'Win'
+        return df
+    else:
+        # Sample data
+        data = {
+            "Date": ["2025-12-26"]*6 + ["2025-12-25"]*8 + ["2025-12-24"]*3 + ["2025-12-23"]*2 + ["2025-12-22"]*1,
+            "Map": ["Haven", "Haven", "Pearl", "Pearl", "Bind", "Abyss", "Split", "Haven", "Haven", "Corrode", "Bind", "Corrode", "Split", "Sunset", "Abyss", "Sunset", "Corrode", "Split", "Pearl", "Haven"],
+            "Mode": ["Competitive"]*20,
+            "Round_Score": ["13:3","13:8","13:11","7:13","8:13","2:13","4:13","13:7","10:13","13:4","13:5","13:11","13:9","13:11","13:4","13:11","13:9","9:13","2:13","9:13"],
+            "Agent": ["Phoenix","Phoenix","Phoenix","KAY/O","Phoenix","Reyna","Reyna","Sage","Reyna","Reyna","Tejo","Phoenix","Clove","Clove","Clove","Reyna","Reyna","Reyna","Phoenix","Sage"],
+            "Rank": ["Silver 1"]*16 + ["Bronze 3"]*4,
+            "Result": ["Win","Win","Win","Loss","Loss","Loss","Loss","Win","Loss","Win","Win","Win","Win","Win","Win","Win","Win","Loss","Loss","Loss"],
+            "K": [20,26,32,12,15,17,13,9,19,23,9,13,24,22,11,31,17,14,12,12],
+            "D": [8,11,16,16,16,14,15,13,19,12,11,19,13,17,13,14,16,18,16,15],
+            "A": [5,6,10,6,6,0,4,7,5,7,4,9,14,7,12,5,2,3,0,6],
+            "KD": [2.5,2.4,2.0,0.8,0.9,1.2,0.9,0.7,1.0,1.9,0.8,0.7,1.8,1.3,0.8,2.2,1.1,0.8,0.8,0.8],
+            "DDΔ": [87,82,153,9,10,44,-19,-28,-1,104,-6,-31,100,32,-32,86,-1,-14,-23,-31],
+            "HS%": [18,25,19,15,36,28,8,23,29,33,26,19,26,31,22,23,25,31,22,22],
+            "ADR": [214,218,295,136,153,195,129,97,165,240,128,111,220,176,96,232,138,122,148,97],
+            "ACS": [346,340,432,207,217,331,219,131,241,384,165,170,314,261,161,357,216,176,240,162],
+            "Performance_Score": [967,970,941,543,492,677,385,311,474,987,583,398,937,843,590,893,519,368,375,341],
+            "Position": ["MVP","MVP","MVP","6th","6th","2nd","2nd","10th","4th","MVP","7th","9th","2nd","5th","8th","MVP","5th","8th","3rd","8th"],
+            "MVP": ["Yes","Yes","Yes","No","No","No","No","No","No","Yes","No","No","No","No","No","Yes","No","No","No","No"]
+        }
+        df = pd.DataFrame(data)
+        df['Date'] = pd.to_datetime(df['Date'])
+        df['Win'] = df['Result'] == 'Win'
+        return df
+
+# # Sidebar for data upload and filters
+# st.sidebar.header("📊 Data & Filters")
+
+# uploaded_file = st.sidebar.file_uploader("Upload your valorant_matches.csv", type="csv")
+# df = load_data(uploaded_file)
+
+# if uploaded_file:
+#     st.sidebar.success("✅ Loaded your data! Dashboard updated.")
+# else:
+#     st.sidebar.info("Using sample data. Upload CSV to analyze your matches.")
+
+# # Date range filter
+# min_date = df['Date'].min()
+# max_date = df['Date'].max()
+# date_range = st.sidebar.date_input("Select Date Range", [min_date, max_date], min_value=min_date, max_value=max_date)
+# df = df[(df['Date'] >= pd.to_datetime(date_range[0])) & (df['Date'] <= pd.to_datetime(date_range[1]))]
+
+# df = df.sort_values('Date')
+
+df = load_data()
+
+df = df.sort_values('Date')
+
+# ======================
+# 🎨 PAGE CONFIG & HEADER
+# ======================
 
 st.markdown(
     """
@@ -98,6 +93,25 @@ st.markdown(
 
 st.title("🎯 Vansh's Valorant Performance Dashboard")
 st.caption("Focused on **one-tap aim consistency**, agent mastery & climb strategy • Data from Dec 22–26, 2025")
+
+# Sidebar for data upload and filters
+st.sidebar.header("📊 Data & Filters")
+
+uploaded_file = st.sidebar.file_uploader("Upload your valorant_matches.csv", type="csv")
+df = load_data(uploaded_file)
+
+if uploaded_file:
+    st.sidebar.success("✅ Loaded your data! Dashboard updated.")
+else:
+    st.sidebar.info("Using sample data. Upload CSV to analyze your matches.")
+
+# Date range filter
+min_date = df['Date'].min()
+max_date = df['Date'].max()
+date_range = st.sidebar.date_input("Select Date Range", [min_date, max_date], min_value=min_date, max_value=max_date)
+df = df[(df['Date'] >= pd.to_datetime(date_range[0])) & (df['Date'] <= pd.to_datetime(date_range[1]))]
+
+df = df.sort_values('Date')
 
 # ======================
 # 📊 KEY METRICS
@@ -217,7 +231,7 @@ if len(one_tap_df) > 0:
     """)
 
 # ======================
-# 🗺️ MAP WIN RATE
+# 🗺️ MAP WIN RATE 
 # ======================
 
 st.subheader("🗺️ Map Performance")
@@ -245,20 +259,21 @@ st.plotly_chart(fig_maps, use_container_width=True)
 st.markdown("---")
 st.subheader("📥 Ready to Use Your Own Data?")
 
-st.write("""
+st.markdown("""
 ✅ **To analyze your live matches**:
 1. Save your match data as `valorant_matches.csv` (use format above)
-2. Uncomment the file uploader below
-3. Re-run the app!
+2. Upload via the sidebar
+3. Dashboard updates automatically!
 """)
 
-# Optional: Uncomment to enable CSV upload
-# uploaded_file = st.file_uploader("Upload your valorant_matches.csv", type="csv")
-# if uploaded_file:
-#     df = pd.read_csv(uploaded_file)
-#     df['Date'] = pd.to_datetime(df['Date'])
-#     df['Win'] = df['Result'] == 'Win'
-#     st.success("✅ Loaded your data! Dashboard updated.")
+# Download current data
+csv = df.to_csv(index=False)
+st.download_button(
+    label="📥 Download Current Data as CSV",
+    data=csv,
+    file_name="valorant_matches.csv",
+    mime="text/csv"
+)
 
 st.markdown("""
 ---
