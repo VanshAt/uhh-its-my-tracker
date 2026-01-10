@@ -192,7 +192,7 @@ st.plotly_chart(fig_agents, use_container_width=True)
 # Highlight Clove (your 100% win rate agent!)
 if 'Clove' in agent_stats['Agent'].values:
     clove_data = agent_stats[agent_stats['Agent'] == 'Clove'].iloc[0]
-    st.info(f"🌟 **Clove is your OP agent!** {int(clove_data['Matches'])}W-0L, {clove_data['Avg_KD']:.1f} K/D, {clove_data['Avg_HS']:.0f}% HS — consider maining!")
+    st.info(f"🌟 **Clove is my OP agent!** {int(clove_data['Matches'])}W-0L, {clove_data['Avg_KD']:.1f} K/D, {clove_data['Avg_HS']:.0f}% HS — consider maining!")
 
 # ======================
 # 🎯 ONE-TAP AIM INSIGHTS (Your Focus!)
@@ -224,11 +224,11 @@ if len(one_tap_df) > 0:
     # Recommendation
     top_1t_agent = one_tap_df['Agent'].mode()[0] if not one_tap_df['Agent'].mode().empty else "Reyna"
     st.success(f"""
-    🔔 **Aim Training Suggestion**:  
-    Your highest HS% (36%) came on **Phoenix** (Bind).  
-    → Try Aim Labs: **'One-Tap Duelist'** + **'HS Focus: Close Range'** routines 15 mins/day.  
-    Target: Consistently >30% HS on Duelists.
-    """)
+    # 🔔 **Aim Training Suggestion**:  
+    # Your highest HS% (36%) came on **Phoenix** (Bind).  
+    # → Try Aim Labs: **'One-Tap Duelist'** + **'HS Focus: Close Range'** routines 15 mins/day.  
+    # Target: Consistently >30% HS on Duelists.
+    # """)
 
 # ======================
 # 🗺️ MAP WIN RATE 
@@ -277,10 +277,8 @@ st.download_button(
 
 st.markdown("""
 ---
-### 🔐 Privacy Note  
-All processing happens in your browser — no data leaves your device.  
+### 🔐 Privacy Note    
 Built by Vansh Dambhare • B.Tech CSE (AI/ML) • Nagpur 🇮🇳
 """)
 
 # Footer
-st.caption("💡 Tip: Update your match log weekly for long-term progress tracking!")
